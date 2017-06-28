@@ -6,20 +6,24 @@
   </head>
   <link rel="stylesheet" href="master.css">
   <body>
-    <form class="" action="/" method="post">
+
+    <form class="" action="/add" method="post">
       <input type="text" name="listItem" value="">
       <input type="submit" name="submit" value="Submit!">
+    </form>
+
+    <form class="" action="/completed" method="post">
     <h1>Things to do</h1>
       {{#todos}}
       <label for="button"></label>
-      <button type="submit" name="button" value='{{.}}'>Completed</button>
-      <label for="button">{{.}}</label>
+      <button type="submit" name="button" value='{{id}}'>Completed</button>
+      <label for="button">{{task}}</label>
       <br>
       {{/todos}}
 
       <h1>Shit done</h1>
        {{#complete}}
-        {{.}}<br>
+        {{task}}<br>
       {{/complete}}
 
     </form>

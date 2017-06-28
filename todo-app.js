@@ -2,41 +2,61 @@ const express = require('express');
 const app = express();
 const mustache = require('mustache-express');
 const bodyParser = require('body-parser');
+var models = require("./models");
 
-
-app.engine('mustache', mustache() )
+app.engine('mustache', mustache())
 app.set('view engine', 'mustache');
 
 app.use(express.static('public'))
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 
-let todos = [];
-let complete = [];
 
-app.get('/', function (req, res) {
-  res.render('index', {todos: todos, complete: complete});
-});
-
-app.post('/', function(req, res){
-  item = req.body.listItem;
-  completeTask = req.body.button
-
-  if(item){
-    todos.push(item);
-  } else if(completeTask){
-    console.log(completeTask);
-    console.log(typeof completeTask);
-      for(let i = 0; i < todos.length; i++){
-        if(todos[i] === completeTask){
-          todos.splice(i, 1);
-        }
+app.get('/', function(req, res) {
+  models.Todos.findAll({
+    where: {
+      completed: false
+    }
+  }).then(function(notDone) {
+    models.Todos.findAll({
+      where: {
+        completed: true
       }
-    complete.push(completeTask);
-  }
-  res.redirect('/');
+    }).then(function(alltrue) {
+      res.render('index', {
+        todos: notDone,
+        complete: alltrue
+      })
+    });
+  });
+});
+app.post('/add', function(req, res) {
+  item = req.body.listItem;
+
+  completeTask = req.body.button
+  const todo = models.Todos.build({task: item})
+  todo.save();
+  return res.redirect('/');
 })
 
-app.listen(3000, function () {
-  console.log('Successfully started express application!')
+app.post('/completed', function(req, res) {
+  let buttonValue = req.body.button;
+  console.log('the id of the button is', buttonValue);
+  models.Todos.findOne({
+    where: {
+      id: buttonValue
+    }
+  }).then(function(todo) {
+    todo.updateAttributes({
+      completed: true
+      // }).then(function(){
+      // res.render('/index');
+    })
+    res.redirect('/');
+  })
+
+})
+
+app.listen(3000, function() {
+  console.log('Lets get this party started! -Pink')
 });
