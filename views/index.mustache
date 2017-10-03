@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>The most horrible ToDo list ever</title>
+    <title>A Basic Todo List</title>
   </head>
   <link rel="stylesheet" href="master.css">
   <body>
@@ -17,9 +17,13 @@
       <br>
       {{/todos}}
 
-      <h1>Shit done</h1>
+      <h1>Things Done</h1>
        {{#complete}}
-        {{.}}<br>
+       <ul>
+         <li>
+           {{.}}
+         </li>
+       </ul>
       {{/complete}}
 
     </form>
